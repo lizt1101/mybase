@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzt.dao.UserDao">
+    <resultMap id="userMap" type="com.lzt.domain.User">
+        <result property="id" javaType="java.lang.Integer" column="id" jdbcType="INTEGER"/>
+        <result property="userName" javaType="java.lang.String" column="user_name" jdbcType="VARCHAR"/>
+        <result property="password" javaType="java.lang.String" column="password" jdbcType="VARCHAR"/>
+        <result property="status" javaType="java.lang.Integer" column="status" jdbcType="TINYINT"/>
+        <result property="isDelete" javaType="java.lang.Integer" column="is_delete" jdbcType="TINYINT"/>
+        <result property="createTime" javaType="java.time.LocalDateTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" javaType="java.time.LocalDateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="signature" javaType="java.lang.String" column="signature" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- Select SQL -->
+    <sql id="userColumn">
+          id,user_name,password,status,is_delete,create_time,update_time,signature
+    </sql>
+
+    <select id="getUserInfoByUserName" parameterType="java.lang.String" resultMap="userMap">
+        select <include refid="userColumn"/> from user where user_name = #{userName} and is_delete = 0
+    </select>
+
+    <sql id="userListWhere">
+        <where>
+            <if test="id != null">
+                and id=#{id}
+            </if>
+                <if test="userName != null">
+                    <if test="userNameLike == false">
+                        and user_name=#{userName}
+                    </if>
+                    <if test="userNameLike == true">
+                        and  user_name like "%"#{userName}"%"
+                    </if>
+                </if>
+                <if test="password != null">
+                    <if test="passwordLike == false">
+                        and password=#{password}
+                    </if>
+                    <if test="passwordLike == true">
+                        and  password like "%"#{password}"%"
+                    </if>
+                </if>
+                <if test="status != null">
+                    and status=#{status}
+                </if>
+                <if test="isDelete != null">
+                    and is_delete=#{isDelete}
+                </if>
+                <if test="createTimeStartTime != null">
+                    and create_time &gt; #{createTime}
+                </if>
+                <if test="createTimeEndTime != null">
+                    and  create_time &lt; #{createTime}
+                </if>
+                <if test="updateTimeStartTime != null">
+                    and update_time &gt; #{updateTime}
+                </if>
+                <if test="updateTimeEndTime != null">
+                    and  update_time &lt; #{updateTime}
+                </if>
+                <if test="signature != null">
+                    <if test="signatureLike == false">
+                        and signature=#{signature}
+                    </if>
+                    <if test="signatureLike == true">
+                        and  signature like "%"#{signature}"%"
+                    </if>
+                </if>
+            <if test="list !=null and list.size >0">
+                AND id in
+                <foreach collection="list" separator="," item="id" open="(" close=")">#{id}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <!-- 根据主键查询 -->
+    <select id="getUserById" resultMap="userMap" parameterType="int">
+        SELECT <include refid="userColumn"/> FROM user
+        WHERE id=#{id} limit 1
+    </select>
+
+    <select id="getUsersByIds" resultMap="userMap" parameterType="java.util.List">
+        SELECT <include refid="userColumn"/> FROM user WHERE
+        id in
+        <foreach collection="list" separator="," item="id" open="(" close=")">#{id}
+        </foreach>
+    </select>
+
+    <!-- 根据主键删除 -->
+    <delete id="deleteUser" parameterType="int">
+        DELETE FROM user WHERE id=#{id}
+    </delete>
+
+    <!-- 根据主键批量删除 -->
+    <delete id="deleteUserByIds" parameterType="java.util.List">
+        DELETE FROM user WHERE
+        id in
+        <foreach collection="list" separator="," item="id" open="(" close=")">#{id}
+        </foreach>
+    </delete>
+
+    <!-- 根据主键更新 -->
+    <update id="updateUser" parameterType="com.lzt.domain.User">
+        UPDATE user
+        <set>
+            <trim suffixOverrides=",">
+                <if test="userName != null">
+                    user_name = #{userName},
+                </if>
+                <if test="password != null">
+                    password = #{password},
+                </if>
+                <if test="status != null">
+                    status = #{status},
+                </if>
+                <if test="isDelete != null">
+                    is_delete = #{isDelete},
+                </if>
+                <if test="createTime != null">
+                    create_time = #{createTime},
+                </if>
+                <if test="updateTime != null">
+                    update_time = #{updateTime},
+                </if>
+                <if test="signature != null">
+                    signature = #{signature},
+                </if>
+            </trim>
+        </set>
+        WHERE
+        id=#{id}
+    </update>
+
+    <!--<select id="getUserList" parameterType="com.lzt.dob.UserDo" resultMap="userMap">
+        SELECT <include refid="userColumn"/> FROM user
+        <include refid="userListWhere" />
+    </select>-->
+
+    <!-- 添加 -->
+    <insert id="saveUser" parameterType="com.lzt.domain.User">
+        INSERT INTO user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+            id,
+            </if>
+            <if test="userName != null">
+            user_name,
+            </if>
+            <if test="password != null">
+            password,
+            </if>
+            <if test="status != null">
+            status,
+            </if>
+            <if test="isDelete != null">
+            is_delete,
+            </if>
+            <if test="createTime != null">
+            create_time,
+            </if>
+            <if test="updateTime != null">
+            update_time,
+            </if>
+            <if test="signature != null">
+            signature,
+            </if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},
+            </if>
+            <if test="userName != null">#{userName},
+            </if>
+            <if test="password != null">#{password},
+            </if>
+            <if test="status != null">#{status},
+            </if>
+            <if test="isDelete != null">#{isDelete},
+            </if>
+            <if test="createTime != null">#{createTime},
+            </if>
+            <if test="updateTime != null">#{updateTime},
+            </if>
+            <if test="signature != null">#{signature},
+            </if>
+        </trim>
+    </insert>
+
+
+</mapper>
