@@ -43,7 +43,7 @@
         <div style="margin: 50px auto;width: 350px;height: 325px;">
             <form Action="${ctx}/user/login" method="post" onsubmit="return check(this) && checkUsername() && checkPassword() && checkCode()">
                 <div class="form-group">
-                    <label for="username" style="font-size: 18px;color: white">用户名</label><span class="remind1" style="display: none"></span>
+                    <label for="username" style="font-size: 18px;color: white">用户名123</label><span class="remind1" style="display: none"></span>
                     <input type="text" name="userName" value="${param.userName}" maxlength="11" class="form-control" style="height: 50px;font-size: 16px;background-color:rgba(255,255,255,0.4)" id="username" placeholder="请输入6-11位字符" onblur="checkUsername()">
                 </div>
                 <div class="form-group">
