@@ -110,7 +110,6 @@
 				<version>2.3</version>
 				<configuration>
 					<warName>mybase</warName>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 			<plugin>
